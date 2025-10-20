@@ -59,7 +59,7 @@ function relation_progress() {
 
 
 function overall_progress() {
-  tables=$(psql ${DSTPG} -AXtwc "SELECT relname FROM pg_class c JOIN pg_subscription_rel sr ON c.oid = sr.srrelid WHERE relkind = 'r' AND srsubstate != 'r';")
+  tables=$(psql ${DSTPG} -AXtwc "SELECT CONCAT(nspname, '.', relname) FROM pg_class c JOIN pg_subscription_rel sr ON c.oid = sr.srrelid JOIN pg_namespace n ON c.relnamespace = n.oid WHERE relkind = 'r' AND srsubstate != 'r';")
   for table in $tables; do
     relation_progress ${table}
   done
